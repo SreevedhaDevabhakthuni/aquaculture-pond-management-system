@@ -1,0 +1,43 @@
+
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: aquaculture-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: exam_2400030242
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aquaculture-net
+
+  backend:
+    image: sreevedhadevabhakthuni/docker-backend-2400030242:latest
+    container_name: aquaculture-backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgresdb
+    restart: on-failure
+    networks:
+      - aquaculture-net
+
+  frontend:
+    image: sreevedhadevabhakthuni/docker-frontend-2400030242:latest
+    container_name: aquaculture-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - aquaculture-net
+
+volumes:
+  postgres_data:
+
+networks:
+  aquaculture-net:
